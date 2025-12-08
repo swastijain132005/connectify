@@ -1,0 +1,119 @@
+/* Whole scroll area */
+.scrollcomponent {
+  height: 100vh;
+  overflow-y: auto;
+  padding: 3rem 5rem;
+  background: #ffe0f3;
+}
+
+
+/* Create Post Card */
+.createpostcontainer {
+  width: 75%;
+  min-width: 480px;
+  background: #ffffff;
+  padding: 1.5rem 1.8rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  transition: 0.2s ease;
+}
+
+.createpostcontainer:hover {
+  box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+}
+
+
+/* Profile Row */
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Profile image */
+.profilepic {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f38acb;
+}
+
+/* Empty space to align layout */
+.emptySpace {
+  flex: 1;
+}
+
+
+/* Input box (What's on your mind) */
+.postinput {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  border: 1px solid #d4d4d4;
+  background: #fafafa;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.postinput:focus {
+  border-color: #ff6ad5;
+  background: white;
+}
+
+
+/* Bottom row (Upload + Post) */
+.bottomrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+/* Upload Button */
+.filelabel {
+  width: 70%;
+  text-align: center;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #ff6ad5, #be63f6);
+  color: #fff;
+  font-weight: 500;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 12px rgba(190, 99, 246, 0.3);
+}
+
+.filelabel:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 18px rgba(190, 99, 246, 0.35);
+}
+
+/* Hide default file input */
+.fileinput {
+  display: none;
+}
+
+
+/* Post Button */
+.postbutton {
+  width: 25%;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #6a5bff, #63f6be);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 4px 12px rgba(106, 91, 255, 0.3);
+}
+
+.postbutton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(106, 91, 255, 0.38);
+}

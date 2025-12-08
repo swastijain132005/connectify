@@ -1,0 +1,96 @@
+/* Layout Wrapper */
+.homecontainer {
+  display: flex;
+  height: 100vh; /* full screen */
+  width: 100%;
+  overflow: hidden;
+  background: #fafafa;
+  color: #333;
+  font-family: "Inter", sans-serif;
+
+}
+
+/* ---------------- SIDEBAR ---------------- */
+
+.homecontainer_left {
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #eaeaea;
+  padding: 1.5rem 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+    padding-top: 80px;
+
+}
+
+.sidebaroptions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  font-size: 1rem;
+  color: #444;
+}
+
+.sidebaroptions:hover {
+  background: #f3f3f3;
+  transform: scale(1.02);
+}
+
+.sidebaroptions i {
+  font-size: 1.1rem;
+  color: #8a57ff;
+}
+
+.sidebaroptions p {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ---------------- FEED (MIDDLE) ---------------- */
+
+.homecontainer_feed_container {
+  margin-left: 240px; /* because sidebar is fixed */
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: scroll;
+  height: 100vh;
+  padding-top: 80px;
+}
+
+/* Hide ugly scrollbar */
+.homecontainer_feed_container::-webkit-scrollbar {
+  width: 0;
+}
+
+/* ---------------- RIGHT SIDEBAR ---------------- */
+
+.homecontainer_extra_container {
+  width: 280px;
+  background: #fff;
+  border-left: 1px solid #eaeaea;
+  padding: 1.5rem;
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding-top: 80px;
+}
+
+.homecontainer_extra_container h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #6c4bd8;
+  font-weight: 600;
+  padding:1.5rem;
+}

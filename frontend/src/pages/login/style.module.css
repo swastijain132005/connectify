@@ -1,0 +1,91 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+  background: #f5f7fb;
+  padding: 20px;
+  padding-top: 80px;
+}
+
+.card {
+  display: flex;
+  width: 900px;
+  height: 550px;
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.left {
+  flex: 1;
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.input:focus {
+  border-color: #4f46e5;
+  background: white;
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  color: white;
+  background: #4f46e5;
+  border: none;
+  border-radius: 10px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.button:hover {
+  background: #757199;
+}
+
+.switch {
+  margin-top: 18px;
+  text-align: center;
+  color: #4f46e5;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.switch:hover {
+  text-decoration: underline;
+}
+
+.right {
+  flex: 1;
+  background: url("/auth.jpg")
+    center/cover no-repeat;
+}

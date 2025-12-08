@@ -1,0 +1,66 @@
+/* Navbar Container (full width, fixed) */
+.container {
+  width: 100%;
+  padding: 0 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Navbar layout */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* push logo left, buttons right */
+  height: 4.5rem;
+  width: 100%;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #7a00c4;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+/* Right side buttons container */
+.navbar-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space between profile and logout */
+}
+
+/* Welcome text */
+.welcome {
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 6px 0;
+}
+
+/* Buttons (profile, logout etc.) */
+.buttonjoin {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff6ad5, #be63f6);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 0, 150, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.buttonjoin:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(255, 0, 150, 0.3);
+}
