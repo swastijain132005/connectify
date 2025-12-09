@@ -1,51 +1,91 @@
 .postsFeed {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem;
-  max-height: 80vh;
-  overflow-y: auto;
+  gap: 1rem;
+  padding: 1.5rem;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  width: 70%;
 }
 
 .postCard {
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  background: #ffffff; /* flat white card */
+  border-radius: 6px;
   padding: 1rem;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0; /* subtle outline */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .postHeader {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.5rem;
+  gap: 0.6rem;
 }
 
 .profilePic {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid #ccc; /* subtle outline */
 }
 
-.username {
-  font-weight: 600;
+.postHeader span {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #111111;
 }
 
-.postBody p {
-  margin-bottom: 0.5rem;
+.postText {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: #333333;
+  word-wrap: break-word;
 }
 
 .postImage {
   width: 100%;
-  max-height: 400px;
+  max-width: 220px; /* smaller, compact image */
+  max-height: 140px;
+  border-radius: 6px;
   object-fit: cover;
-  border-radius: 8px;
+  margin-top: 0.4rem;
+}
+
+/* Optional: subtle hover effect on image */
+.postImage:hover {
+  opacity: 0.95;
+}
+.postFooterContainer {
+  display: flex;
+  gap: 5.5rem; /* space between likes and comments */
+  margin-top: 1rem;
+  align-items: center;
 }
 
 .postFooter {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #555555;
+  cursor: pointer;
+  user-select: none; /* prevent text selection */
+}
+
+.postFooter i {
+  font-size: 1rem;
+  color: #555555;
+  transition: color 0.2s ease;
+}
+
+.postFooter:hover i {
+  color: #007bff; /* subtle color change on hover */
+}
+
+.postFooterText {
+  font-weight: 500;
+  color: #333333;
 }

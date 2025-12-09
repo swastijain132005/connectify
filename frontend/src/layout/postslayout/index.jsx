@@ -12,6 +12,20 @@ export default function PostsFeed() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const handleLike = (post) => {
+    console.log("🔥 HANDLE LIKE CLICKED");
+    alert("button clicked");
+  };
+
+
+  const handleShare = (post) => {
+  const url = encodeURIComponent(`${window.location.origin}/posts/${post._id}`);
+const text = encodeURIComponent(post.body);
+window.open(`https://wa.me/?text=${text}%20${url}`, "_blank");
+
+};
+
+
   useEffect(() => {
     const fetchPosts = async () => {
       if (!user || !token) {
@@ -31,12 +45,7 @@ export default function PostsFeed() {
           },
         });
 
-        // Check if response is JSON
-        const contentType = res.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Server did not return JSON. Check backend!");
-        }
-
+        
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || "Failed to fetch posts");
@@ -76,8 +85,26 @@ export default function PostsFeed() {
     {post.media && (   /* match your schema */
       <img src={post.media} alt="Post media" className={styles.postImage} />
     )}
+
+    <div className={styles.postFooterContainer}>
+  <div className={styles.postFooter}>
+    <span className={styles.postFooterText}>{post.likes}</span>
+    <i className="fa-regular fa-thumbs-up"></i>
   </div>
-))}
+
+  <div className={styles.postFooter}>
+    <span className={styles.postFooterText}>{post.comments?.length || 0}</span>
+    <i className="fa-regular fa-comment-dots"></i>
+  </div>
+  <div  onClick={() => handleShare(post)}>
+    <i className="fa-regular fa-share-from-square"></i>
+</div>
+  </div>
+
+  
+
+  </div>
+      ))}
 
     </div>
   );

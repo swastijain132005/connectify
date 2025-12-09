@@ -23,7 +23,6 @@ const token = useAuthStore.getState().token;
   const [file, setFile] = React.useState();
 
   const handlePost = async () => {
-    alert("button clicked");
 
     console.log("🔥 HANDLE POST CLICKED");
 

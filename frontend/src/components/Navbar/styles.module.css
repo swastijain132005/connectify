@@ -4,11 +4,11 @@
   padding: 0 2rem;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
+  border-bottom: #eac6e0 1px solid;
 }
 
 /* Navbar layout */

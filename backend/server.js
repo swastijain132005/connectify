@@ -14,6 +14,7 @@ app.use("/public", express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
 
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => 
     console.log("MongoDB connected"))

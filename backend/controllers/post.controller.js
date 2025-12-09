@@ -10,15 +10,16 @@ import Comment from "../models/comment.model.js";
 export const createpost = async (req, res) => {
   try {
     const user = req.user;
-    const profile = await Profile.findOne({ userid: user._id });
+    console.log("USER:", user);
+    const profile = await Profile.findOne({ userid: user.id });
 
     if (!profile) return res.status(400).json({ message: "Profile not found" });
 
     const post = await Post.create({
-      userid: user._id,
+      userid: user.id,
       body: req.body.body,
       author: profile.name,
-      media: req.file ? req.file.filename : "",
+      media: req.file ? `http://localhost:5000/public/images/posts/${req.file.filename}`: "",
       filetype: req.file ? req.file.mimetype.split("/")[1] : "",
       likes: 0,
       active: true,
