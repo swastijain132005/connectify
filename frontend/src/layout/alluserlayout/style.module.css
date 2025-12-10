@@ -1,0 +1,65 @@
+/* Container for users feed */
+.usersFeed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;            /* space between cards */
+  width: 100%;
+  max-width: 770px;       /* center column layout */
+  margin: 2rem 6rem;      /* center the feed */
+  padding: 0 1rem;
+}
+
+/* Each user card */
+.userCard {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.2rem;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover effect */
+.userCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Header (image + text) */
+.postHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Profile picture */
+.profilePic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+
+  object-fit: cover;
+  border: 3px solid #f1f1f1;
+}
+
+/* Name + username column */
+.postHeader span {
+  display: block;
+  font-size: 1rem;
+}
+
+.postHeader span:first-of-type {
+  font-weight: 600;       /* Name bold */
+  font-size: 1.1rem;
+}
+
+.postHeader span:last-of-type {
+  color: #555;
+  font-size: 0.9rem;      /* Username lighter */
+}

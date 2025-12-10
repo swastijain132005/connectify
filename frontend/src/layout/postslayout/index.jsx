@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuthStore, usePostStore } from "@/counterstore";
 import styles from "./style.module.css";
+import axiosClient from "@/config/axios";
 
 export default function PostsFeed() {
   const user = useAuthStore((state) => state.user);
@@ -11,11 +12,11 @@ export default function PostsFeed() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+    const [likesCount, setLikesCount] = useState({});
+    const [liked, setLiked] = useState({});
+const [disliked, setDisliked] = useState({});
 
-  const handleLike = (post) => {
-    console.log("🔥 HANDLE LIKE CLICKED");
-    alert("button clicked");
-  };
+  
 
 
   const handleShare = (post) => {
@@ -25,6 +26,51 @@ window.open(`https://wa.me/?text=${text}%20${url}`, "_blank");
 
 };
 
+
+ const handleLike = async (postId) => {
+  if (liked[postId]) return; // already liked
+
+  try {
+    const res = await axiosClient.post("/incrementLikes", { id: postId });
+
+    setLikesCount((prev) => ({
+      ...prev,
+      [postId]: res.data.post.likes,
+    }));
+
+    setLiked((prev) => ({ ...prev, [postId]: true }));
+    setDisliked((prev) => ({ ...prev, [postId]: false }));
+  } catch (error) {
+    console.error("Error liking:", error);
+  }
+};
+
+const handleDislike = async (postId) => {
+  if (disliked[postId]) return; // already disliked
+
+  try {
+    const res = await axiosClient.post("/decrementLikes", { id: postId });
+
+    setLikesCount((prev) => ({
+      ...prev,
+      [postId]: res.data.post.likes,
+    }));
+
+    setDisliked((prev) => ({ ...prev, [postId]: true }));
+    setLiked((prev) => ({ ...prev, [postId]: false }));
+  } catch (error) {
+    console.error("Error disliking:", error);
+  }
+};
+useEffect(() => {
+  if (posts.length > 0) {
+    const initialCounts = {};
+    posts.forEach(p => {
+      initialCounts[p._id] = p.likes;
+    });
+    setLikesCount(initialCounts);
+  }
+}, [posts]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -67,6 +113,7 @@ window.open(`https://wa.me/?text=${text}%20${url}`, "_blank");
   if (loading) return <p className={styles.status}>Loading posts...</p>;
   if (error) return <p className={styles.status}>Error: {error}</p>;
   if (!posts.length) return <p className={styles.status}>No posts yet</p>;
+  
 
   return (
     <div className={styles.postsFeed}>
@@ -86,12 +133,22 @@ window.open(`https://wa.me/?text=${text}%20${url}`, "_blank");
       <img src={post.media} alt="Post media" className={styles.postImage} />
     )}
 
-    <div className={styles.postFooterContainer}>
-  <div className={styles.postFooter}>
-    <span className={styles.postFooterText}>{post.likes}</span>
-    <i className="fa-regular fa-thumbs-up"></i>
-  </div>
+    
 
+    <div className={styles.postFooterContainer}>
+  
+
+  <div className={styles.postFooter}
+       onClick={() => handleLike(post._id)}
+       style={{ cursor: "pointer" }}>
+    <span className={styles.postFooterText}>{likesCount[post._id]}</span>
+    <i className="fa-solid fa-thumbs-up"></i>
+  </div>
+<div className={styles.postFooter}
+       onClick={() => handleDislike(post._id)}
+       style={{ cursor: "pointer" }}>
+    <i className="fa-solid fa-thumbs-down"></i>
+  </div>
   <div className={styles.postFooter}>
     <span className={styles.postFooterText}>{post.comments?.length || 0}</span>
     <i className="fa-regular fa-comment-dots"></i>

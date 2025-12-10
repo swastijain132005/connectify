@@ -159,7 +159,7 @@ export const incrementLikes = async (req, res) => {
     post.likes++;
     await post.save();
 
-    return res.status(200).json({ message: "Likes incremented" });
+    return res.status(200).json({ message: "Likes incremented",post });
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -180,7 +180,7 @@ export const decrementLikes = async (req, res) => {
     if (post.likes > 0) post.likes--;
     await post.save();
 
-    return res.status(200).json({ message: "Likes decremented" });
+    return res.status(200).json({ message: "Likes decremented" ,post});
 
   } catch (error) {
     return res.status(500).json({ message: error.message });

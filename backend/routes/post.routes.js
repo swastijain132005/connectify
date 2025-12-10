@@ -12,6 +12,7 @@ import {
   getAllComments,
   deleteComment,
   incrementLikes,
+  decrementLikes,
 } from "../controllers/post.controller.js";
 
 import { authMiddleware } from "../middleware/auth.js";
@@ -37,5 +38,6 @@ router.post("/commentpost", authMiddleware, commentpost);
 router.get("/getComments", authMiddleware, getAllComments);
 router.post("/deleteComment", authMiddleware, deleteComment);
 router.post("/incrementLikes", authMiddleware, incrementLikes);
+router.post("/decrementLikes", authMiddleware, decrementLikes);
 
 export default router;
