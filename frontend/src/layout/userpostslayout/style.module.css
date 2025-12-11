@@ -1,0 +1,55 @@
+.postsWrapper {
+  width: 100%;
+  max-width: 750px;      /* perfect feed width */
+  margin: 0 auto;        /* center the feed */
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 1rem 0;
+  font-family: "Inter", sans-serif;
+}
+
+/* Each Post Card */
+.postCard {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.postCard:hover {
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.08);
+  border-color: #ddd;
+}
+
+/* Post Text */
+.body {
+  font-size: 1rem;
+  color: #2b2b2b;
+  line-height: 1.5;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* Post Image */
+.image {
+  width: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 0.4rem;
+  border: 1px solid #eee;
+}
+
+.likesText {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

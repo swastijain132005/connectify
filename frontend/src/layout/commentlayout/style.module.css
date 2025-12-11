@@ -1,0 +1,92 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.modal {
+  width: 400px;
+  max-height: 90vh;
+  background: #fff;
+  padding: 18px;
+  border-radius: 10px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.commentsList {
+  margin-top: 15px;
+}
+
+.commentCard {
+  padding: 12px;
+  border-radius: 8px;
+  background: #f7f7f7;
+  margin-bottom: 12px;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profilePic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.username {
+  font-weight: 600;
+}
+
+.commentText {
+  margin-top: 5px;
+}
+
+.deleteBtn {
+  background: red;
+  color: white;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.inputArea {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.inputArea input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.inputArea button {
+  padding: 8px 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

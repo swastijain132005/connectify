@@ -12,6 +12,7 @@ const profileSchema = new mongoose.Schema(
     name: { type: String, required: true },
     about: { type: String, default: "I am a new user" },
     currentpost: { type: String, default: "I am a new user" },
+    bannerpicture: { type: String ,default:"http://localhost:5000/uploads/banner.jpg"},
 
     education: {
       school: { type: String, default: "N/A" },

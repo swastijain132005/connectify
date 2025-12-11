@@ -94,6 +94,8 @@ export const register = async (req, res) => {
       name,
       about: "I am a new user",
       currentpost: "I am a new user",
+          bannerpicture: "http://localhost:5000/uploads/banner.jpg",
+
       education: {
         school: "I am a new user",
         degree: "I am a new user",
@@ -161,7 +163,7 @@ export const login = async (req, res) => {
 // ---------------------------------------------------
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");;
+    const users = (await User.find().select("-password") .sort({ createdAt: -1 }));;
     return res.status(200).json({ users });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -173,10 +175,11 @@ export const getAllUsers = async (req, res) => {
 // ---------------------------------------------------
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(400).json({ message: "User not found" });
+    const profile = await Profile.findOne({ userid: req.params.id }).populate("userid", "name username email profilepicture");
+    console.log("Profile:", profile);
+    if (!profile) return res.status(400).json({ message: "User not found" });
 
-    return res.status(200).json({ user });
+    return res.status(200).json({ profile });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

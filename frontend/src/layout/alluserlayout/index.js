@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuthStore } from "@/counterstore";
 import styles from "./style.module.css";
+import { useRouter } from "next/router";
 
 export default function AllUsers() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
 
@@ -54,7 +56,9 @@ export default function AllUsers() {
   return (
     <div className={styles.usersFeed}>
       {users.map((u) => (
-        <div key={u._id} className={styles.userCard}>
+        <div onClick={()=>{
+          router.push(`/view_profile/${u._id}`);
+        }} key={u._id} className={styles.userCard}>
           <div className={styles.postHeader}>
             <img
               src={u.profilepicture}

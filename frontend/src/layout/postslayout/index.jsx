@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore, usePostStore } from "@/counterstore";
 import styles from "./style.module.css";
 import axiosClient from "@/config/axios";
+import CommentModal from "@/layout/commentlayout";
 
 export default function PostsFeed() {
   const user = useAuthStore((state) => state.user);
@@ -15,6 +16,8 @@ export default function PostsFeed() {
     const [likesCount, setLikesCount] = useState({});
     const [liked, setLiked] = useState({});
 const [disliked, setDisliked] = useState({});
+const [openModal, setOpenModal] = useState(null);
+
 
   
 
@@ -120,48 +123,73 @@ useEffect(() => {
      
       {posts.map((post) => (
   <div key={post._id} className={styles.postCard}>
+    
+    {/* --- Header --- */}
     <div className={styles.postHeader}>
       <img
-        src={post.userid?.profilepicture} // optional chaining avoids crash
+        src={post.userid?.profilepicture}
         alt={post.userid?.name}
         className={styles.profilePic}
       />
-      <span>{post.userid?.name}</span>
+      <div className={styles.postUserInfo}>
+        <h4 className={styles.userName}>{post.userid?.name}</h4>
+        <p className={styles.postTime}>
+          {new Date(post.createdAt).toLocaleString()}
+        </p>
+      </div>
+
+      {/* Options */}
+      <button className={styles.moreBtn}>⋮</button>
     </div>
-    <p className={styles.postText}>{post.body}</p> {/* match your schema */}
-    {post.media && (   /* match your schema */
-      <img src={post.media} alt="Post media" className={styles.postImage} />
+
+    {/* --- Post Text --- */}
+    <p className={styles.postText}>{post.body}</p>
+
+    {/* --- Media Image --- */}
+    {post.media && (
+      <div className={styles.postImageWrapper}>
+        <img src={post.media} alt="Post media" className={styles.postImage} />
+      </div>
     )}
 
-    
+    {/* --- Footer Buttons --- */}
+    <div className={styles.footerRow}>
+      <button
+        className={styles.actionBtn}
+        onClick={() => handleLike(post._id)}
+      >
+        👍 {likesCount[post._id] || 0}
+      </button>
 
-    <div className={styles.postFooterContainer}>
-  
+      <button
+        className={styles.actionBtn}
+        onClick={() => handleDislike(post._id)}
+      >
+        👎
+      </button>
 
-  <div className={styles.postFooter}
-       onClick={() => handleLike(post._id)}
-       style={{ cursor: "pointer" }}>
-    <span className={styles.postFooterText}>{likesCount[post._id]}</span>
-    <i className="fa-solid fa-thumbs-up"></i>
-  </div>
-<div className={styles.postFooter}
-       onClick={() => handleDislike(post._id)}
-       style={{ cursor: "pointer" }}>
-    <i className="fa-solid fa-thumbs-down"></i>
-  </div>
-  <div className={styles.postFooter}>
-    <span className={styles.postFooterText}>{post.comments?.length || 0}</span>
-    <i className="fa-regular fa-comment-dots"></i>
-  </div>
-  <div  onClick={() => handleShare(post)}>
-    <i className="fa-regular fa-share-from-square"></i>
-</div>
-  </div>
+      <button
+        className={styles.actionBtn}
+        onClick={() => setOpenModal(post._id)}
+      >
+        💬 {post.comments?.length || 0}
+      </button>
 
-  
+      <button className={styles.actionBtn} onClick={() => handleShare(post)}>
+        🔁
+      </button>
+    </div>
 
+    {/* Comments modal */}
+    {openModal === post._id && (
+      <CommentModal
+        postId={openModal}
+        onClose={() => setOpenModal(null)}
+      />
+    )}
   </div>
-      ))}
+))}
+
 
     </div>
   );

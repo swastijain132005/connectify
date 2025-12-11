@@ -13,6 +13,7 @@ import {
   deleteComment,
   incrementLikes,
   decrementLikes,
+  getPostsbyuserid,
 } from "../controllers/post.controller.js";
 
 import { authMiddleware } from "../middleware/auth.js";
@@ -34,10 +35,11 @@ const upload = multer({ storage });
 router.post("/createpost", authMiddleware, upload.single("file"), createpost);
 router.get("/getPosts", authMiddleware, getAllPosts);
 router.post("/deletepost", authMiddleware, deletepost);
-router.post("/commentpost", authMiddleware, commentpost);
-router.get("/getComments", authMiddleware, getAllComments);
+router.post("/commentPost", authMiddleware, commentpost);
+router.get("/getComments/:postId", authMiddleware, getAllComments);
 router.post("/deleteComment", authMiddleware, deleteComment);
 router.post("/incrementLikes", authMiddleware, incrementLikes);
 router.post("/decrementLikes", authMiddleware, decrementLikes);
+router.get("/getPostsByUserId/:userid", authMiddleware, getPostsbyuserid);
 
 export default router;

@@ -82,23 +82,27 @@ export const deletepost = async (req, res) => {
 export const commentpost = async (req, res) => {
   try {
     const user = req.user;
+    console.log("COMMENT USER:", user);
     const { postId, commentBody } = req.body;
-
+    
     const post = await Post.findById(postId);
-    if (!post) return res.status(400).json({ message: "Post not found" });
+    if (!post){
+      console.log("POST NOT FOUND FOR COMMENT:", postId);
+       return res.status(400).json({ message: "Post not found" });}
 
     const comment = await Comment.create({
       postid: postId,
-      author: user.name,
-      userid: user._id,
+      author: user.id,
+      userid: user.id,
       content: commentBody,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
+console.log("COMMENT CREATED:", comment);
     return res.status(200).json({ message: "Comment created", comment });
 
-  } catch (error) {
+  } catch (error)
+   {console.error("COMMENT ERROR:", error); 
     return res.status(500).json({ message: error.message });
   }
 };
@@ -111,7 +115,7 @@ export const getAllComments = async (req, res) => {
   try {
     const { postId } = req.params;
 
-    const comments = await Comment.find({ postid: postId })
+    const comments = await Comment.find({ postid: postId }).populate("author", "name username profilepicture")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({ comments });
@@ -129,19 +133,25 @@ export const deleteComment = async (req, res) => {
   try {
     const user = req.user;
     const { id } = req.body;
+console.log("User:", user);
+
 
     const comment = await Comment.findById(id);
+        console.log("Comment:", comment);
+
+
     if (!comment) return res.status(400).json({ message: "Comment not found" });
 
-    if (comment.userid.toString() !== user._id.toString()) {
+    if (comment.userid.toString() !== user.id.toString()) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
     await comment.deleteOne();
     return res.status(200).json({ message: "Comment deleted" });
 
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -182,6 +192,20 @@ export const decrementLikes = async (req, res) => {
 
     return res.status(200).json({ message: "Likes decremented" ,post});
 
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getPostsbyuserid = async (req, res) => {
+  try {
+    const { userid } = req.params;
+
+    const posts = await Post.find({ userid })
+      .populate("userid", "name username email profilepicture")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({ posts });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
