@@ -8,61 +8,7 @@ import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
 
-// ---------------------------------------------------
-// Convert Profile to PDF
-// ---------------------------------------------------
-export const convertUserDataToPDF = async (userprofile) => {
-  return new Promise((resolve, reject) => {
-    const folder = path.join(process.cwd(), "public", "images", "profiles");
 
-    if (!fs.existsSync(folder)) {
-      fs.mkdirSync(folder, { recursive: true });
-    }
-
-    const pdfPath = path.join(folder, "resume.pdf");
-    const doc = new PDFDocument();
-
-    const stream = fs.createWriteStream(pdfPath);
-    doc.pipe(stream);
-
-    // Add profile picture
-    if (userprofile.userid.profilepicture) {
-      const imagePath = path.join(
-        process.cwd(),
-        "public",
-        "images",
-        "profiles",
-        path.basename(userprofile.userid.profilepicture)
-      );
-
-      if (fs.existsSync(imagePath)) {
-        doc.image(imagePath, 20, 20, { width: 100, height: 100 });
-      }
-    }
-
-    doc.fontSize(14).text(`Name: ${userprofile.name}`, 20, 140);
-    doc.text(`Email: ${userprofile.email}`);
-    doc.text(`Username: ${userprofile.userid.username}`);
-    doc.text(`About: ${userprofile.about}`);
-    doc.moveDown();
-
-    doc.text("Education:");
-    doc.text(`School: ${userprofile.education.school}`);
-    doc.text(`Degree: ${userprofile.education.degree}`);
-    doc.text(`Field of Study: ${userprofile.education.fieldofstudy}`);
-    doc.moveDown();
-
-    doc.text("Work:");
-    doc.text(`Company: ${userprofile.work.company}`);
-    doc.text(`Position: ${userprofile.work.position}`);
-    doc.text(`Year: ${userprofile.work.year}`);
-
-    doc.end();
-
-    stream.on("finish", () => resolve(pdfPath));
-    stream.on("error", reject);
-  });
-};
 
 // ---------------------------------------------------
 // REGISTER
@@ -195,21 +141,27 @@ export const logout = async (req, res) => {
 // ---------------------------------------------------
 // UPLOAD PROFILE PICTURE
 // ---------------------------------------------------
-export const uploadProfilePicture = async (req, res) => {
+export const updateProfilePicture = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+     console.log("FILE:", req.file); // 🔥 MUST NOT be undefined
+     console.log("BODY:", req.body);
+    const imagePath = `/images/profiles/${req.file.filename}`;
 
-    user.profilepicture = `/images/profiles/${req.file.filename}`;
-    await user.save();
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { profilepicture: imagePath },
+      { new: true }
+    );
 
     res.json({
-      message: "Profile picture updated",
+      success: true,
       profilepicture: user.profilepicture,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ---------------------------------------------------
 // UPDATE PROFILE (Profile model, not User)
@@ -239,25 +191,86 @@ export const updateuserprofile = async (req, res) => {
 // ---------------------------------------------------
 // DOWNLOAD PROFILE (PDF or Picture)
 // ---------------------------------------------------
+
+
 export const downloadprofile = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ userid: req.user.id });
+    const { id } = req.params; // The ID of the user whose resume we want
 
-    if (!profile) return res.status(400).json({ message: "Profile not found" });
+    const profile = await Profile.findOne({ userid: id }).populate("userid", "name email");
 
-    const filePath = path.join(
-      process.cwd(),
-      "public",
-      "images",
-      "profiles",
-      "resume.pdf"
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    // Create PDF Document
+    const doc = new PDFDocument();
+
+    // Set headers so browser treats response as file download
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${profile.userid.name}_Resume.pdf`
     );
 
-    return res.download(filePath);
+    // Pipe PDF to the response
+    doc.pipe(res);
+
+    // ---------------------------
+    //  HEADER
+    // ---------------------------
+    doc.fontSize(22).text(profile.userid.name, { align: "center" });
+    doc.moveDown(0.5);
+    doc.fontSize(12).text(profile.userid.email, { align: "center" });
+    doc.moveDown(2);
+
+    // ---------------------------
+    //  ABOUT
+    // ---------------------------
+    doc.fontSize(16).text("About", { underline: true });
+    doc.moveDown(0.5);
+    doc.fontSize(12).text(profile.about || "N/A");
+    doc.moveDown(1.5);
+
+    // ---------------------------
+    //  EDUCATION
+    // ---------------------------
+    doc.fontSize(16).text("Education", { underline: true });
+    doc.moveDown(0.5);
+    doc.fontSize(12).text(`School: ${profile.education?.school || "N/A"}`);
+    doc.text(`Degree: ${profile.education?.degree || "N/A"}`);
+    doc.text(`Field: ${profile.education?.fieldofstudy || "N/A"}`);
+    doc.moveDown(1.5);
+
+    // ---------------------------
+    //  WORK EXPERIENCE
+    // ---------------------------
+    doc.fontSize(16).text("Work Experience", { underline: true });
+    doc.moveDown(0.5);
+    doc.fontSize(12).text(`Company: ${profile.work?.company || "N/A"}`);
+    doc.text(`Position: ${profile.work?.position || "N/A"}`);
+    doc.text(`Year: ${profile.work?.year || "N/A"}`);
+    doc.moveDown(1.5);
+
+    // ---------------------------
+    //  SKILLS (optional)
+    // ---------------------------
+    if (profile.skills?.length) {
+      doc.fontSize(16).text("Skills", { underline: true });
+      doc.moveDown(0.5);
+      doc.fontSize(12).text(profile.skills.join(", "));
+      doc.moveDown(1.5);
+    }
+
+    // End the PDF
+    doc.end();
+
   } catch (error) {
+    console.error("PDF Generation Error:", error);
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 // ---------------------------------------------------
 // SEND CONNECTION REQUEST
@@ -377,6 +390,51 @@ export const getConnectionRequests = async (req, res) => {
 
     res.status(200).json({ requests });
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getMyProfile = async (req, res) => {
+  try {
+    const userid = req.user.id;
+    const profile = await Profile.findOne({ userid })
+      .populate("userid", "username email profilepicture");
+
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    res.status(200).json({ success: true, profile });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export async function matchProfiles(profile) {
+  return Profile.find({
+    _id: { $ne: profile._id },
+    $or: [
+      { currentpost: profile.currentpost },
+      { "work.position": profile.work.position },
+      { "work.company": profile.work.company }
+    ]
+  }).limit(5);
+}
+
+export const getMatchedProfiles = async (req, res) => {
+  try {
+    const userid = req.user.id;
+    const profile = await Profile.findOne({ userid })
+      .populate("userid", "username email profilepicture");
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+    const matchedProfiles = await matchProfiles(profile);
+    res.status(200).json({ matchedProfiles });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };

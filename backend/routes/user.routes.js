@@ -7,7 +7,7 @@ import {
   register,
   login,
   logout,
-  uploadProfilePicture,
+  updateProfilePicture,
   updateuserprofile,
   getAllUsers,
   getUserById,
@@ -17,6 +17,7 @@ import {
   getConnections,
   acceptConnectionRequest,
   rejectConnectionRequest,
+  getMyProfile,
 } from "../controllers/usercontroller.js";
 
 const router = Router();
@@ -39,7 +40,13 @@ router.post("/login", login);
 router.post("/logout", authMiddleware, logout);
 
 // -------------------- User routes --------------------
-router.post("/upload", authMiddleware, upload.single("profilepicture"), uploadProfilePicture);
+router.put(
+  "/update-profile-picture",
+  authMiddleware,
+  upload.single("profilepicture"),
+  updateProfilePicture
+);
+
 router.put("/user_update", authMiddleware, updateuserprofile); // use PUT for updates
 router.get("/users", authMiddleware, getAllUsers);
 router.get("/user/:id", authMiddleware, getUserById);
@@ -51,5 +58,6 @@ router.get("/get_conn_req", authMiddleware, getConnectionRequests);
 router.get("/get_conns", authMiddleware, getConnections);
 router.post("/accept_conn_req", authMiddleware, acceptConnectionRequest);
 router.post("/reject_conn_req", authMiddleware, rejectConnectionRequest);
+router.get("/myprofile", authMiddleware, getMyProfile);
 
 export default router;

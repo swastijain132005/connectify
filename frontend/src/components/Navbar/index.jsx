@@ -35,7 +35,7 @@ export default function Navbarcomponent() {
             className={styles.buttonjoin}
             onClick={() => router.push("/dashboard")}
           >
-            Profile
+            <p>Dashboard</p>
           </button>
           <button className={styles.buttonjoin} onClick={handleLogout}>
             Logout

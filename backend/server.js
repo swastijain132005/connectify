@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import postRoutes from "./routes/post.routes.js";
 import userroutes from "./routes/user.routes.js";
+import path from "path";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
 const app = express();
@@ -12,6 +14,13 @@ app.use(cors());
 app.use(express.json());
 app.use("/public", express.static("public"));
 app.use("/uploads", express.static("uploads"));
+app.use("/images", express.static(path.join(process.cwd(), "public/images")));
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+
+
 
 
 

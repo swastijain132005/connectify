@@ -69,6 +69,9 @@ export default function Profile() {
               <div className={styles.actionButtons}>
                 <button className={styles.connectBtn}>Connect</button>
                 <button className={styles.msgBtn}>Message</button>
+              
+
+
               </div>
             </div>
           </div>
