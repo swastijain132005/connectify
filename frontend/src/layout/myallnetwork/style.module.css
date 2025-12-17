@@ -1,0 +1,78 @@
+/* Container */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Empty state */
+.status {
+  text-align: center;
+  font-size: 16px;
+  color: #6b7280;
+  margin-top: 40px;
+}
+
+/* Grid layout */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid #e5e7eb;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Avatar */
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  border: 3px solid #f3f4f6;
+}
+
+/* Name */
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 6px 0 4px;
+}
+
+/* Username */
+.card p {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container {
+    padding: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .card h3 {
+    font-size: 16px;
+  }
+}

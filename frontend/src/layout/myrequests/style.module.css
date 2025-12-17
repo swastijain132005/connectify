@@ -1,0 +1,114 @@
+/* Page container */
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background-color: #f9f8fa;
+  margin-top: 0rem;
+}
+
+/* Requests list */
+.requests {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-right: 140px;;
+}
+
+/* Individual request card */
+.requests > div {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.requests > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Profile image */
+.profilePic {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e4e6eb;
+}
+
+/* User info */
+.requests h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1c1e21;
+}
+
+.requests p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: #65676b;
+}
+
+/* Action buttons container */
+.requests button {
+  margin-left: auto;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Accept button */
+.requests button:first-of-type {
+  background-color: #0a66c2;
+  color: #ffffff;
+}
+
+.requests button:first-of-type:hover {
+  background-color: #004182;
+}
+
+/* Reject button */
+.requests button:last-of-type {
+  background-color: #e4e6eb;
+  color: #1c1e21;
+  margin-left: 8px;
+}
+
+.requests button:last-of-type:hover {
+  background-color: #d8dadf;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .requests > div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .requests button {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.9rem;
+  text-align: center;
+  margin-left: 1.9rem;
+
+}

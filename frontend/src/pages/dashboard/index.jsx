@@ -6,6 +6,9 @@ import styles from "./style.module.css";
 import { useAuthStore } from "@/counterstore";
 import { usePostStore } from "@/counterstore";
 import PostsFeed from "@/layout/postslayout";
+import axiosClient from "@/config/axios";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 
 
 export default function Dashboard() {
@@ -23,32 +26,23 @@ const token = useAuthStore.getState().token;
   const [file, setFile] = React.useState();
 
   const handlePost = async () => {
-
-    console.log("🔥 HANDLE POST CLICKED");
+  console.log("🔥 HANDLE POST CLICKED");
 
   if (!post && !file) return;
 
   const formData = new FormData();
-  formData.append("body", post);   // MUST MATCH model + controller
-  if (file) formData.append("file", file); 
-  console.log("FORMDATA BODY:", formData.get("body"));
-  console.log("FORMDATA FILE:", formData.get("file"));
+  formData.append("body", post);
+  if (file) formData.append("file", file);
 
   try {
-    const res = await fetch("http://localhost:5000/createpost", {
-      method: "POST",
+    const res = await axiosClient.post("/createpost", formData, {
       headers: {
-        Authorization: `Bearer ${token} `, 
+        Authorization: `Bearer ${token}`,
+        // ❌ DO NOT set Content-Type manually for FormData
       },
-      body: formData,
     });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error(data.message);
-      return;
-    }
+    const data = res.data;
 
     // Convert DB post → frontend UI format
     usePostStore.getState().addPost({
@@ -59,19 +53,22 @@ const token = useAuthStore.getState().token;
         : null,
       user: {
         name: data.post.author,
-        profilepicture: user.profilepicture
-      }
+        profilepicture: user.profilepicture,
+      },
     });
 
     setPost("");
     setFile(null);
 
-     console.log("🔥 RESPONSE RECEIVED:", res.status);
-
+    console.log("🔥 RESPONSE RECEIVED:", res.status);
   } catch (err) {
-    console.error("Post error:", err);
+    console.error(
+      "Post error:",
+      err.response?.data?.message || err.message
+    );
   }
 };
+
 
 
   return (
@@ -83,7 +80,7 @@ const token = useAuthStore.getState().token;
 
   {/* Row 1: Profile pic + empty space for future user details */}
   <div className={styles.profileRow}>
-    <img className={styles.profilepic} src={user?.profilepicture} />
+    <img className={styles.profilepic} src={`${BACKEND_URL}${user?.profilepicture}`} />
     <div className={styles.emptySpace}></div>
   </div>
 

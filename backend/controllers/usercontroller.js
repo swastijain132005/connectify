@@ -3,10 +3,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Profile from "../models/profile.model.js";
 import Connection from "../models/connection.model.js";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
+import { authMiddleware } from "../middleware/auth.js";
 
 
 
@@ -40,7 +42,7 @@ export const register = async (req, res) => {
       name,
       about: "I am a new user",
       currentpost: "I am a new user",
-          bannerpicture: "http://localhost:5000/uploads/banner.jpg",
+          bannerpicture: "uploads/banner.jpg",
 
       education: {
         school: "I am a new user",
@@ -53,6 +55,8 @@ export const register = async (req, res) => {
         year: "I am a new user",
       },
     });
+
+    
 
     const token = newUser.generateAuthToken();
 
@@ -109,7 +113,10 @@ export const login = async (req, res) => {
 // ---------------------------------------------------
 export const getAllUsers = async (req, res) => {
   try {
-    const users = (await User.find().select("-password") .sort({ createdAt: -1 }));;
+    const users = await User.find({
+      _id: { $ne: req.user.id }
+    });
+
     return res.status(200).json({ users });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -141,10 +148,10 @@ export const logout = async (req, res) => {
 // ---------------------------------------------------
 // UPLOAD PROFILE PICTURE
 // ---------------------------------------------------
+const url = process.env.NEXT_BACKEND_URL;
 export const updateProfilePicture = async (req, res) => {
   try {
-     console.log("FILE:", req.file); // 🔥 MUST NOT be undefined
-     console.log("BODY:", req.body);
+     
     const imagePath = `/images/profiles/${req.file.filename}`;
 
     const user = await User.findByIdAndUpdate(
@@ -168,23 +175,18 @@ export const updateProfilePicture = async (req, res) => {
 // ---------------------------------------------------
 export const updateuserprofile = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ userid: req.user.id });
+    console.log("REQ BODY:", req.body);
 
-    if (!profile) return res.status(400).json({ message: "Profile not found" });
+    const updatedProfile = await Profile.findOneAndUpdate(
+      { userid: req.user.id },
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
 
-    const { name, about, currentpost, education, work } = req.body;
-
-    profile.name = name;
-    profile.about = about;
-    profile.currentpost = currentpost;
-    profile.education = education;
-    profile.work = work;
-
-    await profile.save();
-
-    res.status(200).json({ message: "Profile updated", profile });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.json({ profile: updatedProfile });
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err);
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -318,11 +320,23 @@ export const getConnections = async (req, res) => {
       .populate("sender", "name username profilepicture")
       .populate("receiver", "name username profilepicture");
 
-    res.status(200).json({ connections });
+    // 🔑 Normalize data
+    const formattedConnections = connections.map((conn) => {
+      const isSender = conn.sender._id.toString() === userId;
+
+      return {
+        _id: conn._id,
+        user: isSender ? conn.receiver : conn.sender,
+        connectedAt: conn.updatedAt,
+      };
+    });
+
+    res.status(200).json({ connections: formattedConnections });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // ---------------------------------------------------
 // ACCEPT REQUEST
@@ -423,7 +437,7 @@ export async function matchProfiles(profile) {
   }).limit(5);
 }
 
-export const getMatchedProfiles = async (req, res) => {
+export const getMatchedProfilesfortopprofiles = async (req, res) => {
   try {
     const userid = req.user.id;
     const profile = await Profile.findOne({ userid })
@@ -438,3 +452,90 @@ export const getMatchedProfiles = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const chatbot= async (req, res) => {
+  try {
+    const {  question, extraData } = req.body;
+
+    if ( !question) {
+      return res.status(400).json({ error: "Missing inputs" });
+    }
+
+    const profile = await Profile.findOne({ userid: req.user.id });
+    if (!profile) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+
+    // 🔹 Prompt
+    const prompt = `
+You are a career guidance AI.
+
+User Profile:
+- Education: ${profile.education.degree}
+- Skills: ${profile.skills.join(", ")}
+- Career Interest: ${profile.careerInterest}
+- Location: ${profile.location}
+
+Additional Info (not stored in DB):
+${JSON.stringify(extraData)}
+
+Rules:
+- Suggest practical career advice
+- Be concise
+- Focus on India-specific opportunities
+- Avoid generic motivation
+
+User Question:
+${question}
+`;
+
+    // 🔹 Gemini Call
+    const result = await model.generateContent(prompt);
+    const aiReply = result.response.text();
+
+    // 🔹 Profile Matching
+    const matchedProfiles = await matchProfiles(profile);
+
+    res.json({
+      reply: aiReply,
+      matchedProfiles
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "AI response failed" });
+  }
+};
+
+export const getMatchedProfiles = async (req, res) => {
+  try {
+    const { search } = req.query;
+
+    const users = await User.find({
+      name: { $regex: search, $options: "i" },
+    });
+
+    return res.status(200).json({ users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error fetching matched profiles" });
+  }
+};
+
+export const getConnectionStatus = async (req, res) => {
+  const me = req.user.id;
+  const other = req.params.id;
+
+  const connection = await Connection.findOne({
+    $or: [
+      { sender: me, receiver: other },
+      { sender: other, receiver: me }
+    ]
+  });
+
+  if (!connection) {
+    return res.json({ status: "Connect" });
+  }
+
+  return res.json({ status: connection.status });
+};
+

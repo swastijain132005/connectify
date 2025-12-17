@@ -6,21 +6,26 @@ import Dashboardlayout from "@/layout/dashboardlayout";
 import { useAuthStore } from "@/counterstore";
 import { useRouter } from "next/router";
 import UserPosts from "@/layout/userpostslayout";
+import toast from "react-hot-toast";
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function Profile() {
   const router = useRouter();
   const { id } = router.query;
-  console.log("the id is", id) // 👈 GET CLICKED USER ID FROM URL
+  const [status, setStatus] = useState(" connect");
 
   const token = useAuthStore((state) => state.token);
 
   const [profile, setProfile] = useState({
     education: {},
-    work: {}
+    work: {},
   });
 
+
+  // ---------------- FETCH PROFILE ----------------
   const fetchProfile = async () => {
-    if (!id) return; // Wait for router to load id
+    if (!id || !token) return;
 
     try {
       const res = await axiosClient.get(`/user/${id}`, {
@@ -30,18 +35,61 @@ export default function Profile() {
       });
 
       setProfile(res.data.profile);
-      console.log("Fetched profile:", res.data.profile);
 
+    
     } catch (err) {
-
       console.error("Error fetching profile:", err);
     }
   };
 
   useEffect(() => {
     fetchProfile();
-    console.log("PROFILE DATA:", profile);
-  }, [id]);
+  }, [id, token]);
+
+  // ---------------- SEND CONNECTION REQUEST ----------------
+  const handleclick = async () => {
+  if (status !== "Connect") return;
+
+  try {
+    await axiosClient.post(
+      "/send_Conn_req",
+      { conn_id: id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // ✅ UPDATE UI IMMEDIATELY
+    setStatus("Request Sent");
+    toast.success("Connection request sent");
+
+  } catch (err) {
+    console.log("ERROR:", err);
+    toast.error("Failed to send request");
+  }
+};
+
+  const fetchConnectionStatus = async () => {
+  try {
+    const res = await axiosClient.get(`/getConnectionStatus/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setStatus( res.data.status);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+useEffect(() => {
+  fetchConnectionStatus();
+},[id, token]);
+
+
+
+
 
   return (
     <Userlayout>
@@ -50,12 +98,17 @@ export default function Profile() {
 
           {/* ---------- TOP PROFILE HEADER ---------- */}
           <div className={styles.header}>
-            <img src={profile?.bannerpicture} className={styles.banner} />
+            <img
+              src={`${BACKEND_URL}/${profile?.bannerpicture}`}
+              className={styles.banner}
+              alt="banner"
+            />
 
             <div className={styles.headerContent}>
               <div className={styles.headerLeft}>
                 <img
-                  src={profile?.userid?.profilepicture}
+                  src={`${BACKEND_URL}${profile.userid?.profilepicture}`}
+                  alt="avatar"
                   className={styles.profilePic}
                 />
 
@@ -67,11 +120,16 @@ export default function Profile() {
               </div>
 
               <div className={styles.actionButtons}>
-                <button className={styles.connectBtn}>Connect</button>
+                <button
+                  className={styles.connectBtn}
+                   disabled={status !== "Connect"}
+                 
+                  onClick={handleclick}
+                >
+                  {status}
+                </button>
+
                 <button className={styles.msgBtn}>Message</button>
-              
-
-
               </div>
             </div>
           </div>
@@ -80,10 +138,9 @@ export default function Profile() {
           <div className={styles.body}>
 
             {/* LEFT SIDE – POSTS */}
-<div className={styles.leftSide}>
-  <UserPosts userId={id} token={token} />
-</div>
-
+            <div className={styles.leftSide}>
+              <UserPosts userId={id} token={token} />
+            </div>
 
             {/* RIGHT SIDE – DETAILS */}
             <div className={styles.rightSide}>

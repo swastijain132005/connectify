@@ -14,6 +14,11 @@ const profileSchema = new mongoose.Schema(
     currentpost: { type: String, default: "I am a new user" },
     bannerpicture: { type: String ,default:"http://localhost:5000/uploads/banner.jpg"},
 
+
+     skills: { type: [String], default: [] },
+  careerInterest: { type: String, default: "Not specified" },
+  location: { type: String, default: "India" },
+
     education: {
       school: { type: String, default: "N/A" },
       degree: { type: String, default: "N/A" },

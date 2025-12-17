@@ -1,0 +1,152 @@
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Modal Box */
+.modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 14px;
+  padding: 24px 26px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+}
+
+/* Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Title */
+.modal h2 {
+  margin-bottom: 16px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Section titles */
+.modal h3 {
+  margin-top: 18px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Labels */
+.modal label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Inputs & textarea */
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.modal textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.modal input:focus,
+.modal textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Grouping education/work fields */
+.modal input + input {
+  margin-top: 8px;
+}
+
+/* Actions */
+.actions {
+  margin-top: 22px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Buttons */
+.actions button {
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Save button */
+.actions button:first-child {
+  background-color: #2563eb;
+  color: white;
+}
+
+.actions button:first-child:hover {
+  background-color: #1e40af;
+}
+
+/* Cancel button */
+.actions button:last-child {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.actions button:last-child:hover {
+  background-color: #e5e7eb;
+}
+
+/* Scrollbar styling */
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .modal {
+    padding: 18px;
+    border-radius: 10px;
+  }
+
+  .modal h2 {
+    font-size: 18px;
+  }
+}

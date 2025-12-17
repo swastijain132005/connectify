@@ -4,6 +4,11 @@ import Dashboardlayout from "@/layout/dashboardlayout";
 import axiosClient from "@/config/axios";
 import { useAuthStore } from "@/counterstore";
 import styles from "./style.module.css";
+import ChatbotModal from "@/layout/chatbotlayout/chatbotModal";
+import EditProfileModal from "@/layout/editprofilelayout/editprofile";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+
 
 export default function Profile() {
 
@@ -12,6 +17,8 @@ export default function Profile() {
 
 const [profile, setProfile] = useState({});
 const [openModal, setOpenModal] = useState(null);
+const [activeModal, setActiveModal] = useState(null);
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -60,6 +67,7 @@ const [openModal, setOpenModal] = useState(null);
 
 
 
+
   if (!profile) {
   return (
     <Userlayout>
@@ -83,7 +91,7 @@ const [openModal, setOpenModal] = useState(null);
             <img
               src={
                 profile.bannerpicture && profile.bannerpicture.trim() !== ""
-                  ? profile.bannerpicture
+                  ? `${BACKEND_URL}/${profile.bannerpicture}`
                   : "/images/default-banner.jpg"
               }
               alt="banner"
@@ -100,10 +108,7 @@ const [openModal, setOpenModal] = useState(null);
   <div className={styles.pro_avatar}>
     <img
       src={
-        profile.userid?.profilepicture?.trim()
-          ? `http://localhost:5000${profile.userid.profilepicture}`
-
-          : "/images/default-avatar.png"
+`${BACKEND_URL}${profile.userid?.profilepicture}`         
       }
       alt="avatar"
     />
@@ -155,6 +160,13 @@ const [openModal, setOpenModal] = useState(null);
 </button>
 
 <button
+  className={styles.actionButtons} onClick={() => setActiveModal("edit")}
+  
+>
+  ✏️ Edit Profile
+</button>
+
+<button
   className={styles.chatbotButton} onClick={() => setOpenModal(true)}
   
 >
@@ -182,6 +194,30 @@ const [openModal, setOpenModal] = useState(null);
               <p><strong>Position:</strong> {profile.work?.position}</p>
               <p><strong>Year:</strong> {profile.work?.year}</p>
             </div>
+
+            <div className={styles.pro_section}>
+              <h2>🤹 Skills</h2>
+              <p><strong>Skills:</strong> {profile.skills?.join(", ")}</p>
+              <p><strong>Career Interest:</strong> {profile.careerInterest}</p>
+              <p><strong>Location:</strong> {profile.location}</p>
+            </div>
+
+
+            {openModal && (
+  <ChatbotModal
+    isOpen={openModal}
+    onClose={() => setOpenModal(false)}
+  />
+)}
+
+{activeModal === "edit" && (
+  <EditProfileModal
+    profile={profile}
+    onClose={() => setActiveModal(null)}
+    onSave={(updatedProfile) => setProfile(updatedProfile)}
+  />
+)}
+
 
          
         </div>

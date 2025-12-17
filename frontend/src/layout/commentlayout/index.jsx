@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import axiosClient from "@/config/axios";
 import styles from "./style.module.css";
+const BACKEND_URL=process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function CommentModal({ postId, onClose }) {
   const [comments, setComments] = useState([]);
@@ -67,7 +68,7 @@ export default function CommentModal({ postId, onClose }) {
               <div key={c._id} className={styles.commentCard}>
                 <div className={styles.commentHeader}>
                   <img
-                    src={c.author?.profilepicture}
+                    src={`${BACKEND_URL}${c.author?.profilepicture}`}
                     className={styles.profilePic}
                     alt="pp"
                   />

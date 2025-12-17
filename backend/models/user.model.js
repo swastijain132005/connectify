@@ -10,7 +10,7 @@ const userSchema = new Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
   active :{ type:Boolean,default:true},
-  profilepicture: { type: String ,default:"http://localhost:5000/uploads/av.png"},
+  profilepicture: { type: String ,default:"/uploads/av.png"},
   createdAt: { type: Date, default: Date.now },
 });
 

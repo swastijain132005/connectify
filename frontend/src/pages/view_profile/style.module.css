@@ -134,5 +134,15 @@
   background: #d6d6d6;
 }
 
+.connectBtn {
+  background-color: #0a66c2; /* LinkedIn blue */
+  color: white;
+}
+
+.sentBtn {
+  background-color: #e4e6eb;
+  color: #555;
+  cursor: not-allowed;
+}
 
 

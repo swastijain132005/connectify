@@ -32,4 +32,6 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/", postRoutes);
 app.use("/", userroutes);
 
+
+
 app.listen(5000, () => console.log("Server running on 5000"));

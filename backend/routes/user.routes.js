@@ -18,6 +18,9 @@ import {
   acceptConnectionRequest,
   rejectConnectionRequest,
   getMyProfile,
+  chatbot,
+  getMatchedProfiles,
+  getConnectionStatus
 } from "../controllers/usercontroller.js";
 
 const router = Router();
@@ -47,7 +50,7 @@ router.put(
   updateProfilePicture
 );
 
-router.put("/user_update", authMiddleware, updateuserprofile); // use PUT for updates
+router.put("/updateprofile", authMiddleware, updateuserprofile); // use PUT for updates
 router.get("/users", authMiddleware, getAllUsers);
 router.get("/user/:id", authMiddleware, getUserById);
 router.get("/user/:id/download_resume", authMiddleware, downloadprofile);
@@ -59,5 +62,8 @@ router.get("/get_conns", authMiddleware, getConnections);
 router.post("/accept_conn_req", authMiddleware, acceptConnectionRequest);
 router.post("/reject_conn_req", authMiddleware, rejectConnectionRequest);
 router.get("/myprofile", authMiddleware, getMyProfile);
+router.post("/api/chatbot", authMiddleware, chatbot);
+router.get("/getMatchedProfiles", authMiddleware, getMatchedProfiles);
+router.get("/getConnectionStatus/:id", authMiddleware, getConnectionStatus);
 
 export default router;

@@ -1,72 +1,76 @@
-import React, { useState, useEffect } from "react";
-import { useAuthStore } from "@/counterstore";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useRouter } from "next/router";
+import axiosClient from "@/config/axios";
+import { useAuthStore } from "@/counterstore";
 
-export default function AllUsers() {
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+export default function Alluserlayout({ users }) {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
 
-  const [error, setError] = useState("");
-  const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const finalUsers = users ?? allUsers; // ⭐ KEY LINE
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (!user || !token) {
-        setError("User not logged in");
-        return;
-      }
+    // Fetch ALL users only when users prop is NOT passed
+    if (users !== undefined) return;
+
+    const fetchAllUsers = async () => {
+      if (!token) return;
 
       setLoading(true);
       setError("");
 
       try {
-        const res = await fetch("http://localhost:5000/users", {
-          method: "GET",
+        const res = await axiosClient.get("/users", {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Failed to fetch users");
-        }
-
-        const data = await res.json();
-        setUsers(data.users || []);
+        setAllUsers(res.data.users || []);
       } catch (err) {
-        console.error("Fetch users error:", err);
-        setError(err.message);
+        setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUsers();
-  }, [user, token]);
+    fetchAllUsers();
+  }, [users, token]);
 
+  // UI states
   if (loading) return <p className={styles.status}>Loading users...</p>;
   if (error) return <p className={styles.status}>Error: {error}</p>;
-  if (!users.length) return <p className={styles.status}>No users yet</p>;
+  if (!finalUsers.length)
+    return <p className={styles.status}>No users found</p>;
 
   return (
     <div className={styles.usersFeed}>
-      {users.map((u) => (
-        <div onClick={()=>{
-          router.push(`/view_profile/${u._id}`);
-        }} key={u._id} className={styles.userCard}>
+      {finalUsers.map((u) => (
+        <div
+          key={u._id}
+          className={styles.userCard}
+          onClick={() => router.push(`/view_profile/${u._id}`)}
+        >
           <div className={styles.postHeader}>
             <img
-              src={u.profilepicture}
+              src={`${BACKEND_URL}${u.profilepicture}`}
               alt={u.name}
               className={styles.profilePic}
+              onError={(e) => {
+                e.target.src = "/default-avatar.png";
+              }}
             />
-            <span>{u.name}</span>
-            <span>@{u.username}</span>
+            <div className={styles.userInfo}>
+              <span className={styles.name}>{u.name}</span>
+              <span className={styles.username}>@{u.username}</span>
+            </div>
           </div>
         </div>
       ))}
