@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Profile from "../models/profile.model.js";
 import Connection from "../models/connection.model.js";
+import Post from "../models/post.model.js";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 import PDFDocument from "pdfkit";
@@ -26,6 +27,15 @@ export const register = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "Email already exists" });
+
+    if (password.length < 10) {
+      return res.status(400).json({ message: "Password must be at least 10 characters long" });
+    };
+
+    const existingUser2 = await User.findOne({ username });
+    if (existingUser2)
+      return res.status(400).json({ message: "Username already exists" });
+
 
     const hash = await bcrypt.hash(password, 10);
 
@@ -113,15 +123,33 @@ export const login = async (req, res) => {
 // ---------------------------------------------------
 export const getAllUsers = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
     const users = await User.find({
+      _id: { $ne: req.user.id }
+    })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalUsers = await User.countDocuments({
       _id: { $ne: req.user.id }
     });
 
-    return res.status(200).json({ users });
+    res.status(200).json({
+      users,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit),
+      hasNextPage: page * limit < totalUsers,
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 // ---------------------------------------------------
 // GET USER BY ID (req.params.id)
@@ -426,32 +454,37 @@ export const getMyProfile = async (req, res) => {
   }
 };
 
+// Service function (no res here)
 export async function matchProfiles(profile) {
-  return Profile.find({
+  const matchedProfiles = await Profile.find({
     _id: { $ne: profile._id },
     $or: [
       { currentpost: profile.currentpost },
-      { "work.position": profile.work.position },
-      { "work.company": profile.work.company }
+      { "work.position": profile.work?.position },
+      { "work.company": profile.work?.company }
     ]
-  }).limit(5);
+  })
+  .limit(5)
+  .populate("userid", "name username email profilepicture");
+
+  return matchedProfiles;
 }
 
-export const getMatchedProfilesfortopprofiles = async (req, res) => {
+// Route handler
+export const getMatchedProfilesHandler = async (req, res) => {
   try {
-    const userid = req.user.id;
-    const profile = await Profile.findOne({ userid })
-      .populate("userid", "username email profilepicture");
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-    const matchedProfiles = await matchProfiles(profile);
-    res.status(200).json({ matchedProfiles });
+    const userProfile = await Profile.findOne({ userid: req.user.id });
+    if (!userProfile) return res.status(404).json({ message: "Profile not found" });
+
+    const matchedProfiles = await matchProfiles(userProfile);
+    res.status(200).json({ profiles: matchedProfiles });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
+
+
 export const chatbot= async (req, res) => {
   try {
     const {  question, extraData } = req.body;

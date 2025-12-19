@@ -20,7 +20,9 @@ import {
   getMyProfile,
   chatbot,
   getMatchedProfiles,
-  getConnectionStatus
+  getConnectionStatus,
+  matchProfiles,
+  getMatchedProfilesHandler
 } from "../controllers/usercontroller.js";
 
 const router = Router();
@@ -65,5 +67,6 @@ router.get("/myprofile", authMiddleware, getMyProfile);
 router.post("/api/chatbot", authMiddleware, chatbot);
 router.get("/getMatchedProfiles", authMiddleware, getMatchedProfiles);
 router.get("/getConnectionStatus/:id", authMiddleware, getConnectionStatus);
+router.get("/matchProfiles", authMiddleware, getMatchedProfilesHandler);
 
 export default router;

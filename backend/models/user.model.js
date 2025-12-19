@@ -8,7 +8,7 @@ const userSchema = new Schema({
     name: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true,minlength:10 },
   active :{ type:Boolean,default:true},
   profilepicture: { type: String ,default:"/uploads/av.png"},
   createdAt: { type: Date, default: Date.now },

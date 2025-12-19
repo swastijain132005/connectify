@@ -40,16 +40,29 @@ export const createpost = async (req, res) => {
 // ------------------------------
 export const getAllPosts = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+    res.set("Cache-Control", "no-store");
+
     const posts = await Post.find()
       .populate("userid", "name username email profilepicture")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    return res.status(200).json({ posts });
+    const totalPosts = await Post.countDocuments();
 
+    res.status(200).json({
+      posts,
+      currentPage: page,
+      hasNextPage: page * limit < totalPosts,
+    });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 
 // ------------------------------

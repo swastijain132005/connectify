@@ -63,3 +63,41 @@
   color: #555;
   font-size: 0.9rem;      /* Username lighter */
 }
+
+
+.loadMore {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 18px;
+
+  background-color: #2563eb; /* blue */
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Hover effect */
+.loadMore:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Disabled state */
+.loadMore:disabled {
+  background-color: #9ca3af; /* gray */
+  cursor: not-allowed;
+}
+
+/* Mobile friendly */
+@media (max-width: 600px) {
+  .loadMore {
+    width: 100%;
+    padding: 12px;
+  }
+}

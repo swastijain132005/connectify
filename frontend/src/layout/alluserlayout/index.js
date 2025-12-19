@@ -13,36 +13,43 @@ export default function Alluserlayout({ users }) {
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+const [hasNextPage, setHasNextPage] = useState(true);
+
 
   const finalUsers = users ?? allUsers; // ⭐ KEY LINE
 
-  useEffect(() => {
-    // Fetch ALL users only when users prop is NOT passed
-    if (users !== undefined) return;
+  const fetchAllUsers = async () => {
+  if (!token || !hasNextPage) return;
 
-    const fetchAllUsers = async () => {
-      if (!token) return;
+  setLoading(true);
+  setError("");
 
-      setLoading(true);
-      setError("");
-
-      try {
-        const res = await axiosClient.get("/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setAllUsers(res.data.users || []);
-      } catch (err) {
-        setError(err.response?.data?.message || err.message);
-      } finally {
-        setLoading(false);
+  try {
+    const res = await axiosClient.get(
+      `/users?page=${page}&limit=10`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    };
+    );
 
-    fetchAllUsers();
-  }, [users, token]);
+    setAllUsers(prev => [...prev, ...(res.data.users || [])]);
+    setHasNextPage(res.data.hasNextPage);
+    setPage(prev => prev + 1);
+  } catch (err) {
+    setError(err.response?.data?.message || err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+useEffect(() => {
+  if (users !== undefined) return;
+  fetchAllUsers();
+}, [token]);
 
   // UI states
   if (loading) return <p className={styles.status}>Loading users...</p>;
@@ -74,6 +81,17 @@ export default function Alluserlayout({ users }) {
           </div>
         </div>
       ))}
+
+      {hasNextPage && (
+  <button
+    className={styles.loadMore}
+    onClick={fetchAllUsers}
+    disabled={loading}
+  >
+    {loading ? "Loading..." : "Load More"}
+  </button>
+)}
+
     </div>
   );
 }

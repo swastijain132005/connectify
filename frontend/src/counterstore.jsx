@@ -28,16 +28,9 @@ export const useAuthStore = create(
 );
 
 
-export const usePostStore = create(
-  persist(
-    (set) => ({
-      posts: [],
-      addPost: (post) =>
-        set((state) => ({ posts: [post, ...state.posts] })),
-      setPosts: (posts) => set({ posts }),
-    }),
-    {
-      name: "post-storage", // key in localStorage
-    }
-  )
-);
+export const usePostStore = create((set) => ({
+  posts: [],
+  setPosts: (posts) => set({ posts }),
+  addPost: (post) =>
+    set((state) => ({ posts: [post, ...state.posts] })),
+}));
