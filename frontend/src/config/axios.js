@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useAuthStore } from "@/counterstore";
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://connectify-1e4v.onrender.com",
 });
 
 // Add JWT token to all requests automatically
