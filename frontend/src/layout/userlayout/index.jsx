@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbarcomponent from '@/components/navbar'
+import Navbarcomponent from '@/components/Navbar/index.jsx';
 
 export default function index({children}) {
   return (
