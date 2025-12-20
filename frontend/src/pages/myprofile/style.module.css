@@ -204,3 +204,44 @@
   background-color: #059669;
   transform: translateY(-1px);
 }
+
+
+@media (max-width: 600px) {
+  .pro_profile_card {
+    padding: 20px;
+    margin: -60px 0px 20px 0px;
+  }
+
+  .pro_name {
+    font-size: 24px;
+    margin-left: 0;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .pro_about {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    gap: 12px;
+    margin-left: 0;
+  }
+
+  .pro_profile_page{
+    margin-left: 0;
+    margin-right: 0;
+    z-index: -1;
+  }
+
+  .pro_main{
+    margin-left: 40px;
+  }
+  .pro_section {
+    padding: 15px;
+    margin-left: 20px;
+  }
+  
+}

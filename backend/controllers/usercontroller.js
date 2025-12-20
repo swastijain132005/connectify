@@ -5,6 +5,13 @@ import Profile from "../models/profile.model.js";
 import Connection from "../models/connection.model.js";
 import Post from "../models/post.model.js";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+import { GoogleGenerativeAI } from "@google/generative-ai";
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+
+
+
 
 import PDFDocument from "pdfkit";
 import fs from "fs";
@@ -516,6 +523,11 @@ Rules:
 - Be concise
 - Focus on India-specific opportunities
 - Avoid generic motivation
+-keep responses under 60 words
+-keep responses in the same language as the user
+-keep responses in the same tone as the user
+-give proper spaces between paragraphs
+-use bullet points to make the response more readable
 
 User Question:
 ${question}
@@ -525,12 +537,11 @@ ${question}
     const result = await model.generateContent(prompt);
     const aiReply = result.response.text();
 
-    // 🔹 Profile Matching
-    const matchedProfiles = await matchProfiles(profile);
+  
 
     res.json({
       reply: aiReply,
-      matchedProfiles
+      
     });
 
   } catch (err) {

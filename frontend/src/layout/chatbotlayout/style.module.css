@@ -16,6 +16,7 @@
   border-radius: 12px;
   width: 600px;
   max-width: 90%;
+   height: 500px; 
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -42,9 +43,9 @@
 
 .body {
   padding: 16px;
-  min-height: 400px;
   overflow-y: auto;
   background-color: #f9f9f9;
+  flex: 1;
 }
 
 .footer {

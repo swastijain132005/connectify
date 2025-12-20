@@ -80,3 +80,21 @@
     transform: translateY(-4px);
     box-shadow: 0 12px 25px rgba(255, 0, 150, 0.3);
 }
+
+@media (max-width: 900px) {
+    .main_container {
+        flex-direction: column;
+        height: auto;
+        gap: 3rem;
+    }
+
+    .main_container_right {
+        order: -1;
+    }
+
+    .main_container_right img {
+        margin-top: 40px;
+        width: 280px;
+        height: 280px;
+    }
+}

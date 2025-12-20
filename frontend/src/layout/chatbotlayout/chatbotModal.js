@@ -2,6 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import styles from "./style.module.css";
+import axiosClient from "@/config/axios";
 
 export default function ChatbotModal({ isOpen, onClose}) {
   const [messages, setMessages] = useState([]); // chat history
@@ -20,22 +21,21 @@ export default function ChatbotModal({ isOpen, onClose}) {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/career-guidance`,
+      const res = await axiosClient.post(
+        `/api/chatbot`,
         {
           
           question: input,
           extraData: {
             experienceLevel: "Beginner",
-            preferredRole: "Backend Developer"
-          }
+            industry: "Technology"}
         }
       );
 
       // Add AI response
       setMessages((prev) => [
         ...prev,
-        { sender: "ai", text: res.data.careerAdvice }
+        { sender: "ai", text: res.data.reply }
       ]);
 
     } catch (err) {

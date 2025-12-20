@@ -23,7 +23,10 @@
 .postHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+}
+
+.postHeader h4 ,.postHeader p {
+ margin-right: 300px;
 }
 
 .profilePic {
@@ -84,10 +87,10 @@
 /* FOOTER BUTTONS */
 .footerRow {
   display: flex;
-  justify-content: space-between;
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #eee;
+  gap: 37px;
 }
 
 .footerRow button {
@@ -146,5 +149,13 @@
   .loadMore {
     width: 100%;
     padding: 12px;
+  }
+
+  .postsFeed{
+    max-width: 900px;
+  }
+
+  .postCard{
+    width:70%;
   }
 }

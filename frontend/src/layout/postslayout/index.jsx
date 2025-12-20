@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuthStore } from "@/counterstore";
-import { usePostStore } from "@/counterstore";
+import { useAuthStore, usePostStore } from "@/counterstore";
 import styles from "./style.module.css";
 import axiosClient from "@/config/axios";
 import CommentModal from "@/layout/commentlayout";
@@ -31,18 +30,26 @@ export default function PostsFeed() {
   }, [posts]);
 
   /* ---------------- Fetch Posts ---------------- */
-  const fetchPosts = async () => {
-    if (!user || !token || loading || !hasNextPage) return;
+  const fetchPosts = async (reset = false) => {
+    if (!user || !token || loading || (!hasNextPage && !reset)) return;
 
     setLoading(true);
     try {
-      const res = await axiosClient.get(`/getPosts?page=${page}&limit=5`, {
+      const res = await axiosClient.get(`/getPosts?page=${reset ? 1 : page}&limit=5`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       const newPosts = Array.isArray(res.data.posts) ? res.data.posts : [];
-      setPosts([...posts, ...newPosts]);
+
+      if (reset) {
+        setPosts(newPosts); // replace on reset (page 1 or refresh)
+        setPage(2);
+      } else {
+        setPosts([...posts, ...newPosts]); // append for pagination
+        setPage((prev) => prev + 1);
+      }
+
       setHasNextPage(res.data.hasNextPage);
-      setPage((prev) => prev + 1);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch posts");
     } finally {
@@ -50,13 +57,16 @@ export default function PostsFeed() {
     }
   };
 
+  /* ---------------- Reset on login change ---------------- */
   useEffect(() => {
-    fetchPosts();
+    if (!user || !token) return;
+    fetchPosts(true); // reset posts on login/token change
   }, [user, token]);
 
   /* ---------------- Actions ---------------- */
   const handleLike = async (id) => {
     if (liked[id]) return;
+
     const res = await axiosClient.post("/incrementLikes", { id });
     setLikesCount((p) => ({ ...p, [id]: res.data.post.likes }));
     setLiked((p) => ({ ...p, [id]: true }));
@@ -66,6 +76,7 @@ export default function PostsFeed() {
 
   const handleDislike = async (id) => {
     if (disliked[id]) return;
+
     const res = await axiosClient.post("/decrementLikes", { id });
     setLikesCount((p) => ({ ...p, [id]: res.data.post.likes }));
     setDisliked((p) => ({ ...p, [id]: true }));
@@ -74,9 +85,7 @@ export default function PostsFeed() {
   };
 
   const handleCommentAdded = (postId, newComment) => {
-    setPosts(posts.map(p =>
-      p._id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p
-    ));
+    setPosts(posts.map(p => p._id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p));
   };
 
   /* ---------------- UI ---------------- */
@@ -119,7 +128,7 @@ export default function PostsFeed() {
       ))}
 
       {hasNextPage && (
-        <button className={styles.loadMore} onClick={fetchPosts} disabled={loading}>
+        <button className={styles.loadMore} onClick={() => fetchPosts()} disabled={loading}>
           {loading ? "Loading..." : "Load More"}
         </button>
       )}

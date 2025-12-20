@@ -33,15 +33,15 @@ export default function DiscoverPage() {
     <Userlayout>
       <Dashboardlayout>
         <div className={styles.container}>
-          <Box sx={{ width: 700, maxWidth: "100%" }}>
+          <div className={styles.searchBox}>
             <TextField
               fullWidth
               label="Search profiles"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-          </Box>
-
+          </div>
+          
           <Button
             variant="contained"
             style={{ backgroundColor: purple[500] }}

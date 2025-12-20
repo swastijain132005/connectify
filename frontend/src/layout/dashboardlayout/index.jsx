@@ -55,7 +55,7 @@ export default function dashboardlayout({ children }) {
             </div>
 
             <div onClick={()=>{router.push('/myprofile')}} className={styles.sidebaroptions}>
-            <i className="fa-solid fa-users"></i> 
+              <i class="fa-solid fa-user"></i>
                <p>My profile</p>
             </div>
 

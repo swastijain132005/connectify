@@ -47,7 +47,7 @@
 }
 
 /* Buttons (profile, logout etc.) */
-.buttonjoin {
+.buttonjoin1, .buttonjoin2 {
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
   background: linear-gradient(135deg, #ff6ad5, #be63f6);
@@ -63,4 +63,21 @@
 .buttonjoin:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 22px rgba(255, 0, 150, 0.3);
+}
+
+@media (max-width: 700px) {
+  
+
+  .welcome {
+    display: none;
+  }
+  
+}
+
+@media (max-width: 500px) {
+  
+
+  .buttonjoin1{
+    display: none;
+  }
 }

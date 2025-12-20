@@ -32,12 +32,12 @@ export default function Navbarcomponent() {
       {user && (
         <>
           <button
-            className={styles.buttonjoin}
+            className={styles.buttonjoin1}
             onClick={() => router.push("/dashboard")}
           >
             <p>Dashboard</p>
           </button>
-          <button className={styles.buttonjoin} onClick={handleLogout}>
+          <button className={styles.buttonjoin2} onClick={handleLogout}>
             Logout
           </button>
         </>

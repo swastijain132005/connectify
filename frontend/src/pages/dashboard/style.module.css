@@ -117,3 +117,36 @@
   transform: scale(1.05);
   box-shadow: 0 6px 18px rgba(106, 91, 255, 0.38);
 }
+
+@media (max-width: 600px) {
+  .scrollcomponent {
+    padding: 2rem 1.5rem;
+  }
+
+  .createpostcontainer {
+    width: 100%;
+    min-width: unset;
+    padding: 1rem 1.2rem;
+  }
+
+  .profilepic {
+    width: 45px;
+    height: 45px;
+  }
+
+  .postinput {
+    font-size: 0.9rem;
+  }
+
+  .filelabel, .postbutton {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  
+
+    .createpostcontainer {
+
+      margin-right: 900px;
+    }
+}
