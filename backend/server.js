@@ -15,6 +15,8 @@ import userroutes from "./routes/user.routes.js";
 
 const app = express();
 
+const port = process.env.PORT || 5000;
+
 
 
 
@@ -32,4 +34,4 @@ app.use("/", userroutes);
 
 app.set("etag", false);
 
-app.listen(5000, () => console.log("Server running on 5000"));
+app.listen(port, () => console.log("Server running on 5000"));
