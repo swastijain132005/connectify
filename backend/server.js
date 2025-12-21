@@ -20,14 +20,19 @@ const port = process.env.PORT || 5000;
 
 
 
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://connectify-ebon.vercel.app"
+];
 
-    "https://connectify-ebon.vercel.app/"
-  ],
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    else callback(new Error("Not allowed by CORS"));
+  },
   credentials: true
 }));
+
 app.use(express.json());
 
 app.use("/public", express.static("public"));
