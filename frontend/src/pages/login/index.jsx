@@ -6,6 +6,7 @@ import axios from "axios";
 import { useState } from "react";
 import UserLayout from "@/layout/userlayout";
 import styles from "./style.module.css";
+import axiosClient from "@/config/axios";
 
 
 import { ToastContainer, toast } from "react-toastify";
@@ -27,7 +28,7 @@ export default function LoginPage() {
   // -------------------- LOGIN --------------------
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/login", {
+      const res = await axiosClient.post("/login", {
         email,
         password,
       });
@@ -44,7 +45,7 @@ setTimeout(() => {
   // -------------------- REGISTER --------------------
   const handleRegister = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/register", {
+      const res = await axiosClient.post("/register", {
         
         username,
         name,
